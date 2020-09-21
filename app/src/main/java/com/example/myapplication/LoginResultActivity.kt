@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_login_result.*
 
 
 class LoginResultActivity : AppCompatActivity() {
@@ -12,6 +13,9 @@ class LoginResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_result)
 
+        button4.setOnClickListener{
+            startActivity(Intent(this, MyLocation::class.java))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
