@@ -11,15 +11,18 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.UiThread
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -49,13 +52,17 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_location)
 
+        val ab: ActionBar? = (supportActionBar)?.apply {
+            hide()
+        }
+
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting()
         } else {
             checkRunTimePermission()
         }
         val textview_address = findViewById<View>(R.id.my_location) as TextView
-        val ShowLocationButton = findViewById<View>(R.id.get_location) as Button
+        val ShowLocationButton = findViewById<View>(R.id.get_location) as FloatingActionButton
         val SOSButton = findViewById<View>(R.id.sos_final) as Button
 
         val database : FirebaseDatabase = FirebaseDatabase.getInstance()
@@ -78,6 +85,8 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
             result["address"] = address
 
             myRef.child("LocationList").push().setValue(result)
+
+            showSettingPopUp()
         }
 
         val fm: FragmentManager = getSupportFragmentManager()
@@ -89,6 +98,37 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         mapFragment!!.getMapAsync(this)
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
+    }
+
+    private fun showSettingPopUp(){
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.alert_help, null)
+        val txt_pop4: TextView = view.findViewById(R.id.txt_pop4)
+        txt_pop4.text = "재난 발생 긴급 신고를 접수하시겠습니까?"
+
+        val alertDialog = AlertDialog.Builder(this).create()
+
+        val butSave1 = view.findViewById<Button>(R.id.butSave1)
+
+        butSave1.setOnClickListener {
+            alertDialog.dismiss()
+            /* val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+             val view = inflater.inflate(R.layout.alert_help1, null)
+             val txt_pop5: TextView = view.findViewById(R.id.txt_pop5)
+             txt_pop5.text = "재난 발생 긴급 신고가 접수되었습니다."
+
+             val alertDialog = AlertDialog.Builder(this).create()
+
+             val intent = Intent(this, LoginResultActivity::class.java)
+             startActivity(intent)*/
+        }
+
+        val butCancel = view.findViewById<Button>(R.id.butCancel)
+        butCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.setView(view)
+        alertDialog.show()
     }
 
     override fun onRequestPermissionsResult(

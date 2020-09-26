@@ -3,12 +3,17 @@ package com.example.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import kotlinx.android.synthetic.main.activity_setting.*
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
+
+        val ab: ActionBar? = (supportActionBar)?.apply {
+            hide()
+        }
 
         txt_edit.setOnClickListener{
             val intent = Intent(this, EditActivity::class.java)
