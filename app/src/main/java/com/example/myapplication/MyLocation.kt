@@ -1,16 +1,11 @@
 package com.example.myapplication
 
-import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
-import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -19,31 +14,31 @@ import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.naver.maps.map.LocationTrackingMode
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
+import kotlinx.android.synthetic.main.activity_my_location.*
+import okhttp3.*
+import org.json.JSONObject
 import java.io.IOException
+import java.net.URLEncoder
 import java.util.*
 
 
 class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
 
+    private val clientId:String = "kcn1kedf9a";//애플리케이션 클라이언트 아이디값";
+    private val clientSecret:String = "wwcby6dtxjXmNu4FVVBqDle2ZZn2xWtkGRMQi5sv";//애플리케이션 클라이언트 시크릿값";
+    private var isRunning=true
+    private var x:Double=0.0
+    private var y:Double=0.0
 
     private var gpsTracker: GpsTracker? = null
-    var REQUIRED_PERMISSIONS = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-
     val LOCATION_PERMISSION_REQUEST_CODE: Int = 1000
     var locationSource: FusedLocationSource? = null
     var naverMap: NaverMap? = null
@@ -56,11 +51,6 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
             hide()
         }
 
-        if (!checkLocationServicesStatus()) {
-            showDialogForLocationServiceSetting()
-        } else {
-            checkRunTimePermission()
-        }
         val textview_address = findViewById<View>(R.id.my_location) as TextView
         val ShowLocationButton = findViewById<View>(R.id.get_location) as FloatingActionButton
         val SOSButton = findViewById<View>(R.id.sos_final) as Button
@@ -87,6 +77,10 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
             myRef.child("LocationList").push().setValue(result)
 
             showSettingPopUp()
+        }
+
+        src_btn.setOnClickListener {
+            fetchJson(src_edit.text.toString())
         }
 
         val fm: FragmentManager = getSupportFragmentManager()
@@ -131,107 +125,6 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         alertDialog.show()
     }
 
-    override fun onRequestPermissionsResult(
-        permsRequestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-
-    ) {
-
-        if (permsRequestCode == MyLocation.PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
-
-            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
-            var check_result = true
-
-
-            // 모든 퍼미션을 허용했는지 체크합니다.
-            for (result in grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    check_result = false
-                    break
-                }
-            }
-            if (check_result) {
-
-                //위치 값을 가져올 수 있음
-            } else {
-                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        REQUIRED_PERMISSIONS[0]
-                    )
-                    || ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        REQUIRED_PERMISSIONS[1]
-                    )) {
-                    Toast.makeText(this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show()
-                    finish()
-                } else {
-                    Toast.makeText(
-                        this,
-                        "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-
-        if (locationSource!!.onRequestPermissionsResult(
-                permsRequestCode, permissions, grantResults
-            )
-        ) {
-//            if (!locationSource.isActivated()) { // 권한 거부됨
-//                naverMap.setLocationTrackingMode(LocationTrackingMode.None);
-//            }
-            return
-        }
-        super.onRequestPermissionsResult(
-            permsRequestCode, permissions, grantResults
-        )
-    }
-
-    fun checkRunTimePermission() {
-
-        //런타임 퍼미션 처리
-        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
-        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
-            hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
-
-            // 2. 이미 퍼미션을 가지고 있다면
-            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
-
-
-            // 3.  위치 값을 가져올 수 있음
-        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
-
-            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])) {
-
-                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
-                Toast.makeText(this, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show()
-                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-                ActivityCompat.requestPermissions(
-                    this, REQUIRED_PERMISSIONS,
-                    PERMISSIONS_REQUEST_CODE
-                )
-            } else {
-                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
-                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-                ActivityCompat.requestPermissions(
-                    this, REQUIRED_PERMISSIONS,
-                    PERMISSIONS_REQUEST_CODE
-                )
-            }
-        }
-    }
 
     fun getCurrentAddress(latitude: Double, longitude: Double): String {
 
@@ -263,50 +156,6 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
             """.trimIndent()
     }
 
-    //여기부터는 GPS 활성화를 위한 메소드들
-    private fun showDialogForLocationServiceSetting() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("위치 서비스 비활성화")
-        builder.setMessage(
-            """
-    앱을 사용하기 위해서는 위치 서비스가 필요합니다.
-    위치 설정을 수정하실래요?
-    """.trimIndent()
-        )
-        builder.setCancelable(true)
-        builder.setPositiveButton("설정") { dialog, id ->
-            val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE)
-        }
-        builder.setNegativeButton("취소") { dialog, id -> dialog.cancel() }
-        builder.create().show()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            GPS_ENABLE_REQUEST_CODE ->
-                //사용자가 GPS 활성 시켰는지 검사
-                if (checkLocationServicesStatus()) {
-                    if (checkLocationServicesStatus()) {
-                        Log.d("@@@", "onActivityResult : GPS 활성화 되있음")
-                        checkRunTimePermission()
-                        return
-                    }
-                }
-        }
-    }
-
-    fun checkLocationServicesStatus(): Boolean {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-    }
-
-    companion object {
-        private const val GPS_ENABLE_REQUEST_CODE = 2001
-        const val PERMISSIONS_REQUEST_CODE = 100
-    }
 
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
@@ -314,5 +163,68 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
+
+    }
+
+    fun fetchJson(vararg p0:String){
+        //OkHttp로 요청하기
+        val text= URLEncoder.encode("${p0[0]}", "utf-8")
+        println(text)
+        val url: String =
+            "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${text}&display="
+        val formBody = FormBody.Builder()
+            .add("query", "${text}")
+            .add("display", "1")
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("X-NCP-APIGW-API-KEY-ID", clientId)
+            .addHeader("X-NCP-APIGW-API-KEY", clientSecret)
+            .method("GET",null)
+            .build()
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call?, response: Response?) {
+                val body = response?.body()?.string()
+                println("Success to execute request : $body")
+
+                val jsonObject = JSONObject(body)
+                val jsonArray = jsonObject.getJSONArray("addresses")
+
+                for (i in 0..jsonArray.length() - 1) {
+                    val iObject = jsonArray.getJSONObject(i)
+                    val roadAddress = iObject.getString("roadAddress")
+                    val jibunAddress = iObject.getString("jibunAddress")
+                    x = iObject.getDouble("x")
+                    y = iObject.getDouble("y")
+
+                    println("roadAddress : $roadAddress")
+                    println("jibunAddress : $jibunAddress")
+                    println("x : $x")
+                    println("y : $y")
+                    val thread=ThreadClass()
+                    thread.start()
+                }
+            }
+            override fun onFailure(call: Call?, e: IOException?) {
+                println("Failed to execute request")
+            }
+        })
+    }
+    inner class ThreadClass:Thread(){
+        override fun run(){
+            while(isRunning){
+                SystemClock.sleep(100)
+                runOnUiThread{
+                    val marker = Marker()
+                    marker.position= LatLng(y, x)
+                    marker.map=naverMap
+                }
+            }
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        isRunning=false
     }
 }
