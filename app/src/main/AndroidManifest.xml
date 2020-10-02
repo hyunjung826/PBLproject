@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,15 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CheckCarActivity"></activity>
-        <activity android:name=".FriendActivity" />
-        <activity android:name=".MyLocation" />
-        <activity android:name=".PlusProtectedActivity" />
-        <activity android:name=".PlusProtectorActivity" />
-        <activity android:name=".EditActivity" />
-        <activity android:name=".SettingActivity" />
-        <activity android:name=".LoginResultActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RescueLoginActivity"></activity>
+        <activity android:name=".RescueMainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CheckCarActivity" />
+        <activity android:name=".FriendActivity" />
+        <activity android:name=".MyLocation" />
+        <activity android:name=".PlusProtectedActivity" />
+        <activity android:name=".PlusProtectorActivity" />
+        <activity android:name=".EditActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".UserMainActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".UserLoginActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"

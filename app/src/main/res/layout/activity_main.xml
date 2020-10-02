@@ -8,124 +8,51 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="301dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="@dimen/margin_left_16"
+            android:layout_marginTop="@dimen/margin_top_16"
+            android:layout_marginRight="@dimen/margin_right_16"
+            android:layout_marginBottom="@dimen/margin_bottom_16"
+            android:orientation="horizontal">
 
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </FrameLayout>
+            <Button
+                android:id="@+id/user_mode"
+                style="@style/Font_family_regular"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                android:layout_marginLeft="@dimen/margin_left_8"
+                android:layout_marginTop="@dimen/margin_top_8"
+                android:layout_marginRight="@dimen/margin_right_8"
+                android:layout_marginBottom="@dimen/margin_bottom_8"
+                android:background="@drawable/red_style3"
+                android:text="사용자"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_20" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha=".4">
-
-        </FrameLayout>
-
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_left_16"
-                android:layout_marginRight="@dimen/margin_right_16"
-                android:layout_marginTop="@dimen/margin_top_16"
-                android:layout_marginBottom="@dimen/margin_bottom_16"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/reg_name_et"
-                    style="@style/Font_family_light"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edit_style"
-                    android:drawableLeft="@drawable/ic_person"
-                    android:drawablePadding="@dimen/padding_16"
-                    android:hint="User Name"
-                    android:layout_marginTop="@dimen/margin_top_8"
-                    android:layout_marginBottom="@dimen/margin_top_8"
-                    android:layout_marginLeft="@dimen/margin_right_16"
-                    android:layout_marginRight="@dimen/margin_right_16"
-                    android:inputType="text"
-                    android:maxLength="30"
-                    android:maxLines="1"
-                    android:padding="@dimen/padding_16"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_20" />
+            <Button
+                android:id="@+id/rescue_mode"
+                style="@style/Font_family_regular"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                android:layout_marginLeft="@dimen/margin_right_8"
+                android:layout_marginTop="@dimen/margin_top_8"
+                android:layout_marginRight="@dimen/margin_right_8"
+                android:layout_marginBottom="@dimen/margin_bottom_8"
+                android:background="@drawable/red_style4"
+                android:text="구조대"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_20" />
 
 
-                <EditText
-                    android:id="@+id/reg_password_et"
-                    style="@style/Font_family_light"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/password"
-                    android:drawablePadding="@dimen/padding_16"
-                    android:background="@drawable/edit_style"
-                    android:hint="Password"
-                    android:layout_marginTop="@dimen/margin_top_8"
-                    android:layout_marginBottom="@dimen/margin_top_8"
-                    android:layout_marginLeft="@dimen/margin_right_16"
-                    android:layout_marginRight="@dimen/margin_right_16"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:padding="@dimen/padding_16"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_20" />
-
-
-                <Button
-                    android:id="@+id/btn_login"
-                    style="@style/Font_family_regular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_right_16"
-                    android:layout_marginTop="@dimen/margin_top_8"
-                    android:layout_marginRight="@dimen/margin_right_16"
-                    android:layout_marginBottom="@dimen/margin_top_8"
-                    android:background="@drawable/red_style"
-                    android:text="로그인"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_20" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_16"
-                    android:layout_marginRight="@dimen/margin_right_16"
-                    android:layout_marginTop="@dimen/margin_top_16"
-                    android:layout_marginBottom="@dimen/margin_bottom_16"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txt_register"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_left_16"
-                        android:layout_marginRight="@dimen/margin_right_16"
-                        android:layout_marginBottom="@dimen/margin_bottom_8"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-regular"
-                        android:gravity="center"
-                        android:paddingTop="@dimen/padding_16"
-                        android:paddingBottom="@dimen/padding_16"
-                        android:text="Create Account"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_20" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </ScrollView>
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -45,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
         val butSave4 = view.findViewById<Button>(R.id.butSave4)
 
         butSave4.setOnClickListener {
-            startActivity(Intent(this,MainActivity::class.java ))
+            startActivity(Intent(this,UserLoginActivity::class.java ))
         }
         alertDialog2.setView(view)
         alertDialog2.show()
