@@ -6,6 +6,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -16,6 +17,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,13 +30,12 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
 
-    private val clientId:String = "kcn1kedf9a";//애플리케이션 클라이언트 아이디값";
-    private val clientSecret:String = "wwcby6dtxjXmNu4FVVBqDle2ZZn2xWtkGRMQi5sv";//애플리케이션 클라이언트 시크릿값";
     private var isRunning=true
     private var x:Double=0.0
     private var y:Double=0.0
