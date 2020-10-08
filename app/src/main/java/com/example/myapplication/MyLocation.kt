@@ -41,8 +41,6 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
     private var x:Double=0.0
     private var y:Double=0.0
     private var addressLine:String?=null
-    val textview_address = findViewById<View>(R.id.my_location) as TextView
-
 
     private var gpsTracker: GpsTracker? = null
     val LOCATION_PERMISSION_REQUEST_CODE: Int = 1000
@@ -246,6 +244,7 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
                     // 카메라 위치와 줌 조절(숫자가 클수록 확대)
                     val cameraPosition = CameraPosition(location, 17.0);
                     naverMap?.setCameraPosition(cameraPosition);
+                    val textview_address = findViewById<View>(R.id.my_location) as TextView
                     textview_address.text = addressLine
                 }
             }
