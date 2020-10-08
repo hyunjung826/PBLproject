@@ -14,6 +14,8 @@ class GetFireStation : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_fire_station)
+        val thread=ThreadClass()
+        thread.start()
     }
     inner class ThreadClass:Thread(){
         override fun run(){
