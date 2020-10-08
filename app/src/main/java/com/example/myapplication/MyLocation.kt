@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -186,6 +187,12 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         mapFragment!!.getMapAsync(this)
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater = menuInflater
+        src_edit.visibility = View.VISIBLE
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     fun getCurrentAddress(latitude: Double, longitude: Double): String {

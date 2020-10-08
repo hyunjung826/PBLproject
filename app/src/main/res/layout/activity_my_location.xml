@@ -11,24 +11,36 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="67dp"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/src_edit"
-                android:layout_width="326dp"
+                android:drawableLeft="@drawable/ic_search"
+                android:drawablePadding="@dimen/padding_8"
+                android:padding="@dimen/padding_12"
+                android:hint="장소를 검색하세요."
+                android:layout_marginLeft="@dimen/margin_left_4"
+                android:layout_width="292dp"
                 android:layout_height="wrap_content"
+                android:background="@color/curated_light"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:layout_marginRight="@dimen/margin_right_8"/>
 
             <Button
                 android:id="@+id/src_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button" />
-        </LinearLayout>
+                android:layout_marginRight="@dimen/margin_right_16"
+                android:background="@drawable/red_style4"
+                android:text="검색"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/white"/>
+        </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
             android:id="@+id/map"
@@ -42,12 +54,12 @@
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/get_location"
                 android:layout_width="wrap_content"
-                android:layout_height="303dp"
-                android:layout_gravity="bottom|right"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/margin_right_8"
+                app:backgroundTint="@color/white"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_gps_fixed"
-                app:backgroundTint="@color/white">
+                android:layout_gravity="bottom|right"
+                android:src="@drawable/ic_gps_fixed">
 
             </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
@@ -64,7 +76,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
