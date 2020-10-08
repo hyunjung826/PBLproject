@@ -4,15 +4,17 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CheckCarActivity"></activity>
+        <activity android:name=".GetFireStationAPI"></activity>
+        <activity android:name=".CheckCarActivity" />
         <activity android:name=".FriendActivity" />
         <activity android:name=".MyLocation" />
         <activity android:name=".PlusProtectedActivity" />
@@ -35,7 +37,7 @@
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="kcn1kedf9a" />
+            android:value="r00dz0i84h" />
     </application>
 
 </manifest>

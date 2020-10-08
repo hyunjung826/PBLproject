@@ -6,6 +6,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -32,16 +33,18 @@ import java.util.*
 
 class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
 
-    private val clientId:String = "kcn1kedf9a";//애플리케이션 클라이언트 아이디값";
-    private val clientSecret:String = "wwcby6dtxjXmNu4FVVBqDle2ZZn2xWtkGRMQi5sv";//애플리케이션 클라이언트 시크릿값";
     private var isRunning=true
     private var x:Double=0.0
     private var y:Double=0.0
+    private var addressLine:String?=null
+    val textview_address = findViewById<View>(R.id.my_location) as TextView
+
 
     private var gpsTracker: GpsTracker? = null
     val LOCATION_PERMISSION_REQUEST_CODE: Int = 1000
     var locationSource: FusedLocationSource? = null
     var naverMap: NaverMap? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +54,7 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
             hide()
         }
 
-        val textview_address = findViewById<View>(R.id.my_location) as TextView
+//        val textview_address = findViewById<View>(R.id.my_location) as TextView
         val ShowLocationButton = findViewById<View>(R.id.get_location) as FloatingActionButton
         val SOSButton = findViewById<View>(R.id.sos_final) as Button
 
@@ -80,7 +83,35 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         }
 
         src_btn.setOnClickListener {
-            fetchJson(src_edit.text.toString())
+//            fetchJson(src_edit.text.toString())
+            // 주소입력후 버튼 클릭시 해당 위도경도값의 지도화면으로 이동
+            var list:List<Address>?=null
+            val str:String = src_edit.text.toString()
+            val geocoder = Geocoder(this, Locale.getDefault())
+
+            try {
+                    list = geocoder?.getFromLocationName(str, // 지역 이름
+                        10) // 읽을 개수
+                } catch (e: IOException) {
+                    e.printStackTrace();
+                    Log.e("test","입출력 오류 - 서버에서 주소변환시 에러발생");
+                }
+            if(list!=null){
+                if(list.size==0){
+                    Toast.makeText(this, "해당되는 주소 정보가 없습니다", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(this, "주소가 검색되었습니다.", Toast.LENGTH_LONG).show()
+                    val addr:Address = list.get(0)
+                    x=addr.latitude
+                    y=addr.longitude
+                    addressLine = addr.getAddressLine(0)
+                    println("위도 x : $x")
+                    println("y : $y")
+                    println("address: $addressLine")
+                    val thread=ThreadClass()
+                    thread.start()
+                }
+            }
         }
 
         val fm: FragmentManager = getSupportFragmentManager()
@@ -166,59 +197,19 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
 
     }
 
-    fun fetchJson(vararg p0:String){
-        //OkHttp로 요청하기
-        val text= URLEncoder.encode("${p0[0]}", "utf-8")
-        println(text)
-        val url: String =
-            "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${text}&display="
-        val formBody = FormBody.Builder()
-            .add("query", "${text}")
-            .add("display", "1")
-            .build()
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("X-NCP-APIGW-API-KEY-ID", clientId)
-            .addHeader("X-NCP-APIGW-API-KEY", clientSecret)
-            .method("GET",null)
-            .build()
-        val client = OkHttpClient()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call?, response: Response?) {
-                val body = response?.body()?.string()
-                println("Success to execute request : $body")
-
-                val jsonObject = JSONObject(body)
-                val jsonArray = jsonObject.getJSONArray("addresses")
-
-                for (i in 0..jsonArray.length() - 1) {
-                    val iObject = jsonArray.getJSONObject(i)
-                    val roadAddress = iObject.getString("roadAddress")
-                    val jibunAddress = iObject.getString("jibunAddress")
-                    x = iObject.getDouble("x")
-                    y = iObject.getDouble("y")
-
-                    println("roadAddress : $roadAddress")
-                    println("jibunAddress : $jibunAddress")
-                    println("x : $x")
-                    println("y : $y")
-                    val thread=ThreadClass()
-                    thread.start()
-                }
-            }
-            override fun onFailure(call: Call?, e: IOException?) {
-                println("Failed to execute request")
-            }
-        })
-    }
     inner class ThreadClass:Thread(){
         override fun run(){
             while(isRunning){
                 SystemClock.sleep(100)
                 runOnUiThread{
                     val marker = Marker()
-                    marker.position= LatLng(y, x)
+                    val location = LatLng(x,y)
+                    marker.position= location
                     marker.map=naverMap
+                    // 카메라 위치와 줌 조절(숫자가 클수록 확대)
+                    val cameraPosition = CameraPosition(location, 17.0);
+                    naverMap?.setCameraPosition(cameraPosition);
+                    textview_address.text = addressLine
                 }
             }
         }

@@ -49,6 +49,10 @@ class LoginResultActivity : AppCompatActivity() {
         button6.setOnClickListener {
             showSettingPopUp1()
         }
+        //test
+        test.setOnClickListener {
+            startActivity(Intent(this, GetFireStationAPI::class.java))
+        }
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting()

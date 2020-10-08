@@ -42,12 +42,12 @@
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/get_location"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/margin_right_8"
-                app:backgroundTint="@color/white"
-                android:layout_marginBottom="8dp"
+                android:layout_height="303dp"
                 android:layout_gravity="bottom|right"
-                android:src="@drawable/ic_gps_fixed">
+                android:layout_marginRight="@dimen/margin_right_8"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/ic_gps_fixed"
+                app:backgroundTint="@color/white">
 
             </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
