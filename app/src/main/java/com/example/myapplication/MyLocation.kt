@@ -6,7 +6,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -19,6 +18,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
@@ -33,6 +33,8 @@ import java.util.*
 
 class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
 
+    private val clientId:String = "kcn1kedf9a";//애플리케이션 클라이언트 아이디값";
+    private val clientSecret:String = "wwcby6dtxjXmNu4FVVBqDle2ZZn2xWtkGRMQi5sv";//애플리케이션 클라이언트 시크릿값";
     private var isRunning=true
     private var x:Double=0.0
     private var y:Double=0.0
@@ -45,6 +47,10 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
     var locationSource: FusedLocationSource? = null
     var naverMap: NaverMap? = null
 
+    private var firestore : FirebaseFirestore? = null
+
+    val user = FirebaseAuth.getInstance().currentUser
+    val user_id = user?.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,17 +60,17 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
             hide()
         }
 
-//        val textview_address = findViewById<View>(R.id.my_location) as TextView
+        val textview_address = findViewById<View>(R.id.my_location) as TextView
         val ShowLocationButton = findViewById<View>(R.id.get_location) as FloatingActionButton
         val SOSButton = findViewById<View>(R.id.sos_final) as Button
-
-        val database : FirebaseDatabase = FirebaseDatabase.getInstance()
-        val myRef : DatabaseReference = database.getReference()
 
         gpsTracker = GpsTracker(this)
         val latitude: Double = gpsTracker!!.getLatitude()
         val longitude: Double = gpsTracker!!.getLongitude()
         val address = getCurrentAddress(latitude, longitude)
+        val currentTime = System.currentTimeMillis()
+        val textTime = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.KOREA).format(currentTime)
+
 
         ShowLocationButton.setOnClickListener {
             textview_address.text = address
@@ -72,18 +78,74 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         }
 
         SOSButton.setOnClickListener{
-            val result = HashMap<Any, Any>()
-            result["latitude"] = latitude
-            result["longitude"] = longitude
-            result["address"] = address
+            fun addDatabase() {
+                if (latitude == null || longitude == null) {
+                    Toast.makeText(this, "위치 정보를 제대로 받아오지 못했습니다.", Toast.LENGTH_LONG).show()
+                    //txtAddResult.text = "입력되지 않은 값이 있습니다."
+                    return
+                }
+                val locationDTO = locationDTO(
+                    user_id.toString(),
+                    textTime,
+                    latitude,
+                    longitude,
+                    address
+                )
+                val document = user_id.toString()
 
-            myRef.child("LocationList").push().setValue(result)
+                firestore = FirebaseFirestore.getInstance()
+
+                firestore?.collection("locationList")?.document(document)
+                    ?.set(locationDTO)?.addOnCompleteListener { task ->
+                        //progressBar7.visibility = View.GONE
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "신고 접수 완료", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+            }
+
+            fun showSettingPopUp(){
+
+                val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val view = inflater.inflate(R.layout.alert_help, null)
+                val txt_pop4: TextView = view.findViewById(R.id.txt_pop4)
+                txt_pop4.text = "재난 발생 긴급 신고를 접수하시겠습니까?"
+
+                val alertDialog = AlertDialog.Builder(this).create()
+
+                val butSave1 = view.findViewById<Button>(R.id.butSave1)
+
+                butSave1.setOnClickListener {
+                    addDatabase()
+                    alertDialog.dismiss()
+                    /* val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                     val view = inflater.inflate(R.layout.alert_help1, null)
+                     val txt_pop5: TextView = view.findViewById(R.id.txt_pop5)
+                     txt_pop5.text = "재난 발생 긴급 신고가 접수되었습니다."
+
+                     val alertDialog = AlertDialog.Builder(this).create()
+
+                     val intent = Intent(this, LoginResultActivity::class.java)
+                     startActivity(intent)*/
+
+
+                }
+
+                val butCancel = view.findViewById<Button>(R.id.butCancel)
+                butCancel.setOnClickListener {
+                    alertDialog.dismiss()
+                }
+                alertDialog.setView(view)
+                alertDialog.show()
+            }
 
             showSettingPopUp()
         }
 
         src_btn.setOnClickListener {
-//            fetchJson(src_edit.text.toString())
             // 주소입력후 버튼 클릭시 해당 위도경도값의 지도화면으로 이동
             var list:List<Address>?=null
             val str:String = src_edit.text.toString()
@@ -125,38 +187,6 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
 
     }
 
-    private fun showSettingPopUp(){
-        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.alert_help, null)
-        val txt_pop4: TextView = view.findViewById(R.id.txt_pop4)
-        txt_pop4.text = "재난 발생 긴급 신고를 접수하시겠습니까?"
-
-        val alertDialog = AlertDialog.Builder(this).create()
-
-        val butSave1 = view.findViewById<Button>(R.id.butSave1)
-
-        butSave1.setOnClickListener {
-            alertDialog.dismiss()
-            /* val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-             val view = inflater.inflate(R.layout.alert_help1, null)
-             val txt_pop5: TextView = view.findViewById(R.id.txt_pop5)
-             txt_pop5.text = "재난 발생 긴급 신고가 접수되었습니다."
-
-             val alertDialog = AlertDialog.Builder(this).create()
-
-             val intent = Intent(this, LoginResultActivity::class.java)
-             startActivity(intent)*/
-        }
-
-        val butCancel = view.findViewById<Button>(R.id.butCancel)
-        butCancel.setOnClickListener {
-            alertDialog.dismiss()
-        }
-        alertDialog.setView(view)
-        alertDialog.show()
-    }
-
-
     fun getCurrentAddress(latitude: Double, longitude: Double): String {
 
         //지오코더... GPS를 주소로 변환
@@ -196,7 +226,6 @@ class MyLocation : AppCompatActivity(), OnMapReadyCallback  {
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
 
     }
-
     inner class ThreadClass:Thread(){
         override fun run(){
             while(isRunning){
