@@ -35,6 +35,10 @@ class UserMainActivity : AppCompatActivity() {
             showSettingPopUp1()
         }
 
+        test.setOnClickListener {
+            startActivity(Intent(this,GetFireStation::class.java ))
+        }
+
 
     }
 
