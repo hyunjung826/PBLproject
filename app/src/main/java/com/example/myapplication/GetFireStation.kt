@@ -35,7 +35,7 @@ class GetFireStation : AppCompatActivity() {
             StringBuilder("http://openapi.safekorea.go.kr/openapi/service/firestation/item") /*URL*/
         urlBuilder.append(
             "?" + URLEncoder.encode("ServiceKey", "UTF-8")
-                .toString() + URLEncoder.encode("=3dItxsHHzQJiyIitvKVQUr8%2ByHe5Qoov%2F5P2PbQ5IHpGhY5DBOO5J05edGISs%2BpNk1vMZzGX4K5XD1VvLBIIjw%3D%3D", "UTF-8")
+                .toString() + "=3dItxsHHzQJiyIitvKVQUr8%2ByHe5Qoov%2F5P2PbQ5IHpGhY5DBOO5J05edGISs%2BpNk1vMZzGX4K5XD1VvLBIIjw%3D%3D"
         ) /*Service Key*/
         urlBuilder.append(
             "&" + URLEncoder.encode("firestation_addr_cd", "UTF-8")
