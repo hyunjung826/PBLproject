@@ -1,7 +1,5 @@
 package com.example.myapplication
 
-import java.text.SimpleDateFormat
-
 data class locationDTO (
     val uid: String? = null,
     val time: String? = null,
