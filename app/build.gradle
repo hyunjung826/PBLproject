@@ -58,4 +58,7 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
     implementation 'com.google.code.gson:gson:2.8.2'
+
+    //카카오내비 sdk를 사용하기 위해 필요
+    implementation group: 'com.kakao.sdk', name:'kakaonavi', version:project.KAKAO_SDK_VERSION
 }

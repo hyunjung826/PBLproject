@@ -7,13 +7,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".GetFireStation"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".GetFireStation" />
         <activity android:name=".CheckCarActivity" />
         <activity android:name=".RescueLoginActivity" />
         <activity android:name=".RescueMainActivity" />
@@ -41,6 +41,9 @@
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="kcn1kedf9a" />
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
     </application>
 
 </manifest>

@@ -6,38 +6,73 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Base64
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.kakao.kakaonavi.KakaoNaviParams
+import com.kakao.kakaonavi.KakaoNaviService
+import com.kakao.kakaonavi.Location
+import com.kakao.kakaonavi.NaviOptions
+import com.kakao.kakaonavi.options.CoordType
+import com.kakao.kakaonavi.options.RpOption
+import com.kakao.kakaonavi.options.VehicleType
 import kotlinx.android.synthetic.main.activity_main.*
+import java.security.MessageDigest
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+
+    var button: Button? = null
 
     var REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        button = findViewById<View>(R.id.button) as Button
+        button!!.setOnClickListener(this)
 
         user_mode.setOnClickListener{
             startActivity(Intent(this, UserLoginActivity::class.java))
         }
 
         rescue_mode.setOnClickListener {
-            startActivity(Intent(this, RescueLoginActivity::class.java ))
+            startActivity(Intent(this, RescueMainActivity::class.java ))
         }
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting()
         } else {
             checkRunTimePermission()
+        }
+    }
+
+    override fun onClick(v: View?) {
+        if (v!!.id == R.id.button) {
+            val destination: Location =
+                Location.newBuilder("카카오 판교 오피스", 127.10821222694533, 37.40205604363057).build()
+
+            val options = NaviOptions.newBuilder().setCoordType(CoordType.WGS84)
+                .setVehicleType(VehicleType.FIRST).setRpOption(RpOption.SHORTEST).build()
+
+            val builder = KakaoNaviParams.newBuilder(destination).setNaviOptions(options)
+
+            val params = builder.build()
+            KakaoNaviService.getInstance().navigate(this, builder.build())
         }
     }
 

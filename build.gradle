@@ -22,6 +22,9 @@ allprojects {
         maven {
             url 'https://navercorp.bintray.com/maps'
         } //네이버 지도 api를 사용하기 위한 루트 build.gradle 수정사항
+        maven{
+            url 'http://devrepo.kakao.com:8088/nexus/content/groups/public'
+        }
     }
 }
 
