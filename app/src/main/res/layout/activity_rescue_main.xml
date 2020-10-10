@@ -8,8 +8,53 @@
     android:orientation="vertical"
     tools:context=".RescueMainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_fragment1"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_marginLeft="@dimen/margin_left_8"
+            android:layout_marginTop="@dimen/margin_top_8"
+            android:layout_marginRight="@dimen/margin_right_8"
+            android:layout_marginBottom="@dimen/margin_bottom_4"
+            android:layout_weight="1"
+            android:background="@drawable/red_style4"
+            android:text="대기"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_22"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_fragment2"
+            android:background="@drawable/red_style4"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_marginTop="@dimen/margin_top_8"
+            android:layout_marginRight="@dimen/margin_right_8"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_22"
+            android:textColor="@color/white"
+            android:text="완료" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+
+
 </LinearLayout>
