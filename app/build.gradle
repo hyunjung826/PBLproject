@@ -44,6 +44,9 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
 
+    // 카카오 네비 SDK
+    implementation "com.kakao.sdk:v2-navi:2.0.3"
+
     //noinspection GradleCompatible
     implementation 'com.android.support:design:28.0.0'
 
