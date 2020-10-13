@@ -22,6 +22,7 @@ class RescueLoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rescue_login)
+
     }
 
     /*override fun onClick(v: View?) {
