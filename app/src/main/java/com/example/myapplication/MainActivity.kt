@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         rescue_mode.setOnClickListener {
-            startActivity(Intent(this, RescueMainActivity::class.java ))
+            startActivity(Intent(this, RescueLoginActivity::class.java ))
         }
 
         if (!checkLocationServicesStatus()) {
