@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.StrictMode
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_rescue_login.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -70,7 +71,22 @@ class RescueLoginActivity : Activity() {
         //Adapter
         var change_status1 = status1?.split("\n")
         adapter = ArrayAdapter(this, android.R.layout.select_dialog_singlechoice)
-        adapter.addAll(change_status1?.get(0), change_status1?.get(1), change_status1?.get(2), change_status1?.get(3), change_status1?.get(4), change_status1?.get(5), change_status1?.get(6), change_status1?.get(7), change_status1?.get(8), change_status1?.get(9))
+        adapter.addAll(
+            change_status1?.get(0),
+            change_status1?.get(1),
+            change_status1?.get(2),
+            change_status1?.get(
+                3
+            ),
+            change_status1?.get(4),
+            change_status1?.get(5),
+            change_status1?.get(6),
+            change_status1?.get(
+                7
+            ),
+            change_status1?.get(8),
+            change_status1?.get(9)
+        )
         adapter.notifyDataSetChanged()
 
         select_firestation.setOnClickListener {
@@ -83,9 +99,18 @@ class RescueLoginActivity : Activity() {
         val alert = AlertDialog.Builder(this)
         alert.setTitle("소방서목록") //타이틀
         //alert.setIcon(R.drawable.icon) //아이콘
+
+        val checkedItem = -1 //맨 처음 아무것도 체크 안된 상태
+
         //어답터 , 클릭이벤트 설정
-        alert.setAdapter(adapter, object: DialogInterface.OnClickListener {
-            override fun onClick(dialog:DialogInterface, which:Int) {
+        alert.setSingleChoiceItems(adapter, checkedItem){ dialog, which ->
+        }
+
+        alert.setPositiveButton("OK"){dialog, which ->
+        }
+
+        alert.setAdapter(adapter, object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface, which: Int) {
                 val firestation = adapter.getItem(which)
                 result_firestation.setText(firestation)
                 //Toast.makeText(this@RescueLoginActivity, "선택한 소방서 : " + firestation, Toast.LENGTH_SHORT).show()
@@ -93,5 +118,4 @@ class RescueLoginActivity : Activity() {
         })
         alert.show()
     }
-
 }
