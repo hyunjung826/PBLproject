@@ -31,6 +31,7 @@ import java.security.MessageDigest
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 
+
     var button: Button? = null
 
     var REQUIRED_PERMISSIONS = arrayOf(
@@ -40,8 +41,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        try{
+            val info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+            val signatures = info.signingInfo.apkContentsSigners
+            val md = MessageDigest.getInstance("SHA")
+            for (signature in signatures) {
+                val md: MessageDigest
+                md = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                val key = String(Base64.encode(md.digest(), 0))
+                Log.d("Hash Key:", "!!!!!!$key!!!!!!")
+            }
+        } catch(e: Exception) {
+            Log.e("name not found", e.toString())
+        }
 
         button = findViewById<View>(R.id.button) as Button
         button!!.setOnClickListener(this)
@@ -59,6 +76,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } else {
             checkRunTimePermission()
         }
+
     }
 
     override fun onClick(v: View?) {
@@ -222,5 +240,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         private const val GPS_ENABLE_REQUEST_CODE = 2001
         const val PERMISSIONS_REQUEST_CODE = 100
     }
+
+
 
 }
