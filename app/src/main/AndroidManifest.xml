@@ -2,25 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapplication">
 
-    <!--queries에 카카오내비 패키지 추가-->
-    <queries>
-        <package android:name="com.locnall.KimGiSa" />
-        <package android:name="com.lguplus.navi" />
-    </queries>
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".GetFireStation"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".CheckCarActivity" />
         <activity android:name=".RescueLoginActivity" />
         <activity android:name=".RescueMainActivity" />
@@ -50,8 +43,7 @@
             android:value="kcn1kedf9a" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="255f67f0ee71e70efd1dd0d38cee324b"/>
-
+            android:value="@string/kakao_app_key" />
     </application>
 
 </manifest>
