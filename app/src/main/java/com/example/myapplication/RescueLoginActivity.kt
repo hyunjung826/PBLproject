@@ -30,15 +30,14 @@ class RescueLoginActivity : Activity() {
 
         StrictMode.enableDefaults()
 
-        var status1: String? = ""  //파싱된 결과확인!
         var inTitle = false
-        var title: String? = null
+        var facilityName: String? = null
 
         try {
             val url = URL(
-                "http://apis.data.go.kr/6480000/gyeongnamfirestation/gyeongnamfirestationList?"
-                        + "&pageNo=1&numOfRows=10&ServiceKey="
-                        + "XNuagU2meF4n8h4A3ZORYikPkK%2F7nDmE30cEYtzdnUlStW5ViNKwDYTHb1gRptlPciZIMCcvfznKdD7lYGxCRw%3D%3D"
+                "http://openapi.safekorea.go.kr/openapi/service/firestation/item?"
+                        + "&ServiceKey="
+                        + "3dItxsHHzQJiyIitvKVQUr8%2ByHe5Qoov%2F5P2PbQ5IHpGhY5DBOO5J05edGISs%2BpNk1vMZzGX4K5XD1VvLBIIjw%3D%3D"
             ) //검색 URL부분
             val parserCreator = XmlPullParserFactory.newInstance()
             val parser = parserCreator.newPullParser()
@@ -49,19 +48,19 @@ class RescueLoginActivity : Activity() {
             while (parserEvent != XmlPullParser.END_DOCUMENT) {
                 when (parserEvent) {
                     XmlPullParser.START_TAG -> {
-                        if ((parser.name == "title")) { //title 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "facilityName")) { //title 만나면 내용을 받을수 있게 하자
                             inTitle = true
                         }
                     }
                     XmlPullParser.TEXT -> {
                         if (inTitle) { //isMapx이 true일 때 태그의 내용을 저장.
-                            title = parser.text.toString()
+                            facilityName = parser.text.toString()
                             inTitle = false
                         }
                     }
                     XmlPullParser.END_TAG -> if ((parser.name == "item")) {
-                        if (title != null) {
-                            list.add(title)
+                        if (facilityName != null) {
+                            list.add(facilityName)
                         }
                     }
                 }
@@ -74,7 +73,6 @@ class RescueLoginActivity : Activity() {
         }
 
         //Adapter
-        var change_status1 = status1?.split("\n")
         adapter = ArrayAdapter(this, android.R.layout.select_dialog_singlechoice)
         adapter.addAll(list)
         adapter.notifyDataSetChanged()
