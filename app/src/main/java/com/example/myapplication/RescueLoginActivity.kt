@@ -4,10 +4,14 @@ package com.example.myapplication
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_rescue_login.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -18,7 +22,7 @@ class RescueLoginActivity : Activity() {
 
     //List Dialog Adapter
     lateinit var adapter: ArrayAdapter<String>
-
+    var list = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,19 +49,20 @@ class RescueLoginActivity : Activity() {
             while (parserEvent != XmlPullParser.END_DOCUMENT) {
                 when (parserEvent) {
                     XmlPullParser.START_TAG -> {
-                        if ((parser.name == "title")) { //mapx 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "title")) { //title 만나면 내용을 받을수 있게 하자
                             inTitle = true
                         }
                     }
-
                     XmlPullParser.TEXT -> {
                         if (inTitle) { //isMapx이 true일 때 태그의 내용을 저장.
-                            title = parser.text
+                            title = parser.text.toString()
                             inTitle = false
                         }
                     }
                     XmlPullParser.END_TAG -> if ((parser.name == "item")) {
-                        status1 = (status1 + title + "\n")
+                        if (title != null) {
+                            list.add(title)
+                        }
                     }
                 }
                 parserEvent = parser.next()
@@ -71,22 +76,7 @@ class RescueLoginActivity : Activity() {
         //Adapter
         var change_status1 = status1?.split("\n")
         adapter = ArrayAdapter(this, android.R.layout.select_dialog_singlechoice)
-        adapter.addAll(
-            change_status1?.get(0),
-            change_status1?.get(1),
-            change_status1?.get(2),
-            change_status1?.get(
-                3
-            ),
-            change_status1?.get(4),
-            change_status1?.get(5),
-            change_status1?.get(6),
-            change_status1?.get(
-                7
-            ),
-            change_status1?.get(8),
-            change_status1?.get(9)
-        )
+        adapter.addAll(list)
         adapter.notifyDataSetChanged()
 
         select_firestation.setOnClickListener {

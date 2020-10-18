@@ -2,14 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/test_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="-62dp">
 
         <Button
             android:id="@+id/button"
@@ -19,8 +23,8 @@
             android:layout_marginTop="275dp" />
 
         <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="148dp"
+            android:layout_width="292dp"
+            android:layout_height="153dp"
             android:layout_marginLeft="@dimen/margin_left_16"
             android:layout_marginTop="@dimen/margin_top_16"
             android:layout_marginRight="@dimen/margin_right_16"

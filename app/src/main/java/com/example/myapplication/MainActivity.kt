@@ -30,8 +30,6 @@ import java.security.MessageDigest
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-
-
     var button: Button? = null
 
     var REQUIRED_PERMISSIONS = arrayOf(
@@ -45,23 +43,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        try{
-            val info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-            val signatures = info.signingInfo.apkContentsSigners
-            val md = MessageDigest.getInstance("SHA")
-            for (signature in signatures) {
-                val md: MessageDigest
-                md = MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                val key = String(Base64.encode(md.digest(), 0))
-                Log.d("Hash Key:", "!!!!!!$key!!!!!!")
-            }
-        } catch(e: Exception) {
-            Log.e("name not found", e.toString())
-        }
-
         button = findViewById<View>(R.id.button) as Button
         button!!.setOnClickListener(this)
+
 
         user_mode.setOnClickListener{
             startActivity(Intent(this, UserLoginActivity::class.java))
@@ -79,6 +63,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    //카카오내비 테스트
     override fun onClick(v: View?) {
         if (v!!.id == R.id.button) {
             val destination: Location =
@@ -93,6 +78,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             KakaoNaviService.getInstance().navigate(this, builder.build())
         }
     }
+
+
 
     override fun onRequestPermissionsResult(
         permsRequestCode: Int,
