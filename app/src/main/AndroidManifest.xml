@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".RescueNumberActivity"></activity>
+        <activity android:name=".SelectRescueActivity" />
         <activity android:name=".CheckCarActivity" />
         <activity android:name=".RescueLoginActivity" />
         <activity android:name=".RescueMainActivity" />

@@ -43,9 +43,9 @@ class RegisterActivity : AppCompatActivity() {
 
         val butSave4 = view.findViewById<Button>(R.id.butSave4)
 
-        butSave4.setOnClickListener {
-            startActivity(Intent(this,UserLoginActivity::class.java ))
-        }
+       // butSave4.setOnClickListener {
+       //     startActivity(Intent(this,UserLoginActivity::class.java ))
+      //  }
         alertDialog2.setView(view)
         alertDialog2.show()
     }

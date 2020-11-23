@@ -32,7 +32,7 @@ class SettingActivity : AppCompatActivity() {
         }
 
         txt_logout.setOnClickListener{
-            val intent = Intent(this, UserLoginActivity::class.java )
+            val intent = Intent(this, MainActivity::class.java )
             FirebaseAuth.getInstance().signOut()
             startActivity(intent)
         }

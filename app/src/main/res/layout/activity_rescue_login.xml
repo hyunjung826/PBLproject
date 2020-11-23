@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".RescueLoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,6 +16,29 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <EditText
+                android:id="@+id/editTextFilter"
+                android:drawableLeft="@drawable/ic_search"
+                android:drawablePadding="@dimen/padding_8"
+                android:padding="@dimen/padding_12"
+                android:layout_marginTop="@dimen/margin_top_16"
+                android:layout_marginLeft="@dimen/margin_left_16"
+                android:layout_marginRight="@dimen/margin_right_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/curated_light"
+                android:hint="소방서를 검색하세요."
+                android:ems="10"
+                android:completionThreshold="2"
+                android:inputType="textNoSuggestions" />
+
+            <ListView
+                android:id="@+id/fire_listview"
+                android:layout_width="match_parent"
+                android:layout_height="520dp"
+                android:layout_marginTop="@dimen/margin_top_8"
+                android:textFilterEnabled="true" />
+
             <Button
                 android:id="@+id/select_firestation"
                 android:layout_width="match_parent"
@@ -25,9 +48,9 @@
             <TextView
                 android:id="@+id/result_firestation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>
