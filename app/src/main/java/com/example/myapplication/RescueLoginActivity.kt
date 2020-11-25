@@ -48,7 +48,7 @@ class RescueLoginActivity : Activity() {
             while (parserEvent != XmlPullParser.END_DOCUMENT) {
                 when (parserEvent) {
                     XmlPullParser.START_TAG -> {
-                        if ((parser.name == "facilityName")) { //title 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "facilityName")) { //기관명 만나면 내용을 받을수 있게 하자
                             inTitle = true
                         }
                     }
