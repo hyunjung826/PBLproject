@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/editTextFilter"
+                android:id="@+id/editSearch"
                 android:drawableLeft="@drawable/ic_search"
                 android:drawablePadding="@dimen/padding_8"
                 android:padding="@dimen/padding_12"
@@ -37,7 +37,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="520dp"
                 android:layout_marginTop="@dimen/margin_top_8"
-                android:textFilterEnabled="true" />
+                android:textFilterEnabled="true"
+                android:divider="#999999"
+                android:dividerHeight="1dp"/>
 
             <Button
                 android:id="@+id/select_firestation"
