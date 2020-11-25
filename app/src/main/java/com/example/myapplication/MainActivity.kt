@@ -16,8 +16,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.kakao.kakaonavi.KakaoNaviParams
 import com.kakao.kakaonavi.KakaoNaviService
 import com.kakao.kakaonavi.Location
@@ -29,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.security.MessageDigest
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private var auth : FirebaseAuth? = null
 
     var button: Button? = null
 
@@ -46,19 +51,56 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         button = findViewById<View>(R.id.button) as Button
         button!!.setOnClickListener(this)
 
-
-        user_mode.setOnClickListener{
-            startActivity(Intent(this, UserLoginActivity::class.java))
+        val ab: ActionBar? = (supportActionBar)?.apply {
+            hide()
         }
 
-        rescue_mode.setOnClickListener {
-            startActivity(Intent(this, RescueLoginActivity::class.java ))
+        auth = FirebaseAuth.getInstance()
+
+        btn_login.setOnClickListener {
+            emailLogin()
+//            val intent = Intent(this, LoginResultActivity::class.java)
+//            startActivity(intent)
+        }
+
+        txt_register.setOnClickListener{
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting()
         } else {
             checkRunTimePermission()
+        }
+
+    }
+
+    private fun emailLogin() {
+        if (reg_name_et.text.toString().isNullOrEmpty() || reg_password_et.text.toString().isNullOrEmpty()) {
+            Toast.makeText(this, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        var email = reg_name_et.text.toString()
+        var password = reg_password_et.text.toString()
+        //progressBar.visibility = View.VISIBLE
+        auth?.signInWithEmailAndPassword(email, password)
+            ?.addOnCompleteListener { task ->
+                //progressBar.visibility = View.GONE
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Email 로그인 성공", Toast.LENGTH_LONG).show()
+                    moveLoginResult(auth?.currentUser)
+                } else {
+                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
+                }
+            }
+    }
+
+    private fun moveLoginResult(user: FirebaseUser?) {
+        if (user != null) {
+            startActivity(Intent(this, UserLoginActivity::class.java))
+            finish()
         }
 
     }
