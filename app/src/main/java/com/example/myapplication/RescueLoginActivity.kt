@@ -22,13 +22,9 @@ import java.net.URL
 
 class RescueLoginActivity : Activity(){
 
-    //List Dialog Adapter
-    lateinit var adapter: ArrayAdapter<String>
-    var list = ArrayList<String>()
-
-    // 검색어를 입력할 Input 창
-    private var editSearch: EditText? = null
-
+    lateinit var adapter: ArrayAdapter<String>  // 리스트뷰에 연결할 Adapter
+    var list = ArrayList<String>()              // 소방서 목록 넣을 리스트
+    private var editSearch: EditText? = null    // 검색어를 입력할 Input 창
     private var arraylist: java.util.ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +36,6 @@ class RescueLoginActivity : Activity(){
 
         //검색하는 창
         editSearch = findViewById<View>(R.id.editSearch) as EditText
-
         //리스트 형식으로 소방서목록 받아온것
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
         fire_listview.adapter = adapter
