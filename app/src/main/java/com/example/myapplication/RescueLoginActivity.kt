@@ -38,9 +38,10 @@ class RescueLoginActivity : Activity(){
         editSearch = findViewById<View>(R.id.editSearch) as EditText
         //리스트 형식으로 소방서목록 받아온것
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
-        fire_listview.adapter = adapter
+        val listView = findViewById<ListView>(R.id.fire_listview)
+        listView.adapter = adapter
 
-        // input창에 검색어를 입력시 "addTextChangedListener" 이벤트 리스너를 정의한다.
+       // input창에 검색어를 입력시 "addTextChangedListener" 이벤트 리스너를 정의한다.
         editSearch!!.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -51,7 +52,6 @@ class RescueLoginActivity : Activity(){
                 search(text)
             }
         })
-
         StrictMode.enableDefaults()
 
         var inTitle = false
@@ -96,10 +96,18 @@ class RescueLoginActivity : Activity(){
         }
 //
         //Adapter
-        adapter.addAll(list)
         arraylist!!.addAll(list)
         adapter.notifyDataSetChanged()
+
+        //Item click listener
+        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val selectItem = parent.getItemAtPosition(position) as String
+            //Toast.makeText(this, selectItem, Toast.LENGTH_LONG).show()
+            val intent = Intent(this, RescueNumberActivity::class.java)
+            startActivity(intent)
+        }
     }
+
 
     fun search(charText: String) {
 
