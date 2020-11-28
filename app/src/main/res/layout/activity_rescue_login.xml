@@ -41,17 +41,6 @@
                 android:divider="#999999"
                 android:dividerHeight="1dp"/>
 
-            <Button
-                android:id="@+id/select_firestation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="소방서 선택하기" />
-
-            <TextView
-                android:id="@+id/result_firestation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
         </LinearLayout>
     </ScrollView>
 
