@@ -41,8 +41,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var firestore: FirebaseFirestore? = null
     val user = FirebaseAuth.getInstance().currentUser
-
-
     private var auth : FirebaseAuth? = null
 
     var button: Button? = null
@@ -51,6 +49,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
+    var status1: String? = null //파싱된 결과확인!
+    //var inFirestationAddrCode = false
+    //var inResultCode = false
+    var inFacilityName = false
+    var inLatitude = false
+    var inLongitude = false
+    var inAddrNm = false
+    var inTel = false
+    var inFax = false
+
+    //var firestation_addr_code: String? = null
+    //var resultCode: String? = null
+    var facilityName: String? = null
+    var latitude: String? = null
+    var longitude: String? = null
+    var addrNm: String? = null
+    var tel: String? = null
+    var fax: String? = null
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,26 +85,30 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         StrictMode.enableDefaults()
-        var status1: String? = null //파싱된 결과확인!
-        //var inFirestationAddrCode = false
-        //var inResultCode = false
-        var inFacilityName = false
-        var inLatitude = false
-        var inLongitude = false
-        var inAddrNm = false
-        var inTel = false
-        var inFax = false
+        // 소방서 firebase 등록
+        getFireStation()
 
-        //var firestation_addr_code: String? = null
-        //var resultCode: String? = null
-        var facilityName: String? = null
-        var latitude: String? = null
-        var longitude: String? = null
-        var addrNm: String? = null
-        var tel: String? = null
-        var fax: String? = null
+        txt_register.setOnClickListener{
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
 
+        btn_login.setOnClickListener {
+            emailLogin()
+//            val intent = Intent(this, LoginResultActivity::class.java)
+//            startActivity(intent)
+        }
+
+        if (!checkLocationServicesStatus()) {
+            showDialogForLocationServiceSetting()
+        } else {
+            checkRunTimePermission()
+        }
+
+    }
+    fun getFireStation(){
         try {
+
             val url = URL(
                 "http://openapi.safekorea.go.kr/openapi/service/firestation/item?"
                         + "&ServiceKey="
@@ -108,26 +128,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //                        if ((parser.name == "resultCode")) { //title 만나면 내용을 받을수 있게 하자
 //                            inResultCode = true
 //                        }
-                        if ((parser.name == "facilityName")) { //mapx 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "facilityName")) { //기관명 만나면 내용을 받을수 있게 하자
                             inFacilityName = true
                         }
-                        if ((parser.name == "latitude")) { //mapy 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "latitude")) { //latitude 만나면 내용을 받을수 있게 하자
                             inLatitude = true
                         }
-                        if ((parser.name == "longitude")) { //mapy 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "longitude")) { //longitude 만나면 내용을 받을수 있게 하자
                             inLongitude = true
                         }
-                        if ((parser.name == "addrNm")) { //mapy 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "addrNm")) { //주소(addrNm) 만나면 내용을 받을수 있게 하자
                             inAddrNm = true
                         }
-                        if ((parser.name == "tel")) { //mapy 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "tel")) { //전화번호(tel) 만나면 내용을 받을수 있게 하자
                             inTel = true
                         }
-                        if ((parser.name == "fax")) { //mapy 만나면 내용을 받을수 있게 하자
+                        if ((parser.name == "fax")) { //fax 만나면 내용을 받을수 있게 하자
                             inFax = true
                         }
                         if ((parser.name == "message")) { //message 태그를 만나면 에러 출력
-                                status1 = status1 + "에러"
+                            status1 = status1 + "에러"
                             //여기에 에러코드에 따라 다른 메세지를 출력하도록 할 수 있다.
                         }
                     }
@@ -167,83 +187,60 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
 
                     XmlPullParser.END_TAG -> if ((parser.name == "item")) {
-                            status1 =
-                                (status1
-                                        //+ "법정동코드 : " + firestation_addr_code + "\n "
-                                        //+ "결과코드 : " + resultCode+ "\n "
-                                        + "시설물명 : " + facilityName + "\n "
-                                        + "위도 : " + latitude + "\n "
-                                        + "경도 : " + longitude + "\n "
-                                        + "주소 : " + addrNm + "\n "
-                                        + "연락처 : " + tel + "\n "
-                                        + "팩스번호 : " + fax
-                                        + "\n")
+                        status1 =
+                            (status1
+                                    //+ "법정동코드 : " + firestation_addr_code + "\n "
+                                    //+ "결과코드 : " + resultCode+ "\n "
+                                    + "시설물명 : " + facilityName + "\n "
+                                    + "위도 : " + latitude + "\n "
+                                    + "경도 : " + longitude + "\n "
+                                    + "주소 : " + addrNm + "\n "
+                                    + "연락처 : " + tel + "\n "
+                                    + "팩스번호 : " + fax
+                                    + "\n")
                     }
                 }
+                addDatabase()
                 parserEvent = parser.next()
             }
-
-            fun addDatabase() {
-                if (facilityName == null) {
-                    Toast.makeText(this, "소방서명을 제대로 받아오지 못했습니다.", Toast.LENGTH_LONG).show()
-                    //txtAddResult.text = "입력되지 않은 값이 있습니다."
-                    return
-                }
-
-//                val FirestationDTO = FirestationDTO(
-//                    //resultCode,
-//                    facilityName,
-//                    latitude,
-//                    longitude,
-//                    addrNm,
-//                    tel,
-//                    fax
-//                )
-
-                val document = facilityName.toString()
-
-                firestore = FirebaseFirestore.getInstance()
-
-                firestore?.collection("FirestationList")?.document(document)
-                    ?.set(status1!!)?.addOnCompleteListener { task ->
-                        //progressBar7.visibility = View.GONE
-                        if (task.isSuccessful) {
-                            Toast.makeText(this, "완료", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG)
-                                .show()
-                        }
-                    }
-            }
-
-            addDatabase()
 
         } catch (e: Exception) {
             if (status1 != null) {
                 //status1.text = "에러가..났습니다..."
             }
         }
-
-
-
-
-        txt_register.setOnClickListener{
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
+    }
+    fun addDatabase() {
+        if (facilityName == null) {
+            Toast.makeText(this, "소방서명을 제대로 받아오지 못했습니다.", Toast.LENGTH_LONG).show()
+            //txtAddResult.text = "입력되지 않은 값이 있습니다."
+            return
         }
 
-        btn_login.setOnClickListener {
-            emailLogin()
-//            val intent = Intent(this, LoginResultActivity::class.java)
-//            startActivity(intent)
-        }
+        val FirestationDTO = FirestationDTO(
+            //resultCode,
+            facilityName,
+            latitude,
+            longitude,
+            addrNm,
+            tel,
+            fax
+        )
 
-        if (!checkLocationServicesStatus()) {
-            showDialogForLocationServiceSetting()
-        } else {
-            checkRunTimePermission()
-        }
+        val document = facilityName.toString()
 
+        firestore = FirebaseFirestore.getInstance()
+
+        firestore?.collection("FirestationList")?.document(document)
+            ?.set(status1!!)?.addOnCompleteListener { task ->
+                //progressBar7.visibility = View.GONE
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "완료", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
     }
 
     private fun emailLogin() {
