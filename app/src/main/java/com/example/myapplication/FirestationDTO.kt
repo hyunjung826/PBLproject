@@ -2,13 +2,15 @@ package com.example.myapplication
 
 data class FirestationDTO (
     //val resultCode: String? = null
-    val facilityName: String? = null,
-    val latitude: String? = null,
-    val longitude: String? = null,
-    val addrNm: String? = null,
-    val tel: String? = null,
-    val fax: String? = null
+    var facilityName: String? = null,
+    var latitude: String? = null,
+    var longitude: String? = null,
+    var addrNm: String? = null,
+    var tel: String? = null,
+    var fax: String? = null
+
 )
+
 
 //fun getTitle():  String? {
 //    return this.facilityName
