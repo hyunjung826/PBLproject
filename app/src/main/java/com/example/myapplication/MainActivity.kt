@@ -183,18 +183,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 parserEvent = parser.next()
             }
 
-        } catch (e: Exception) {
-            if (status1 != null) {
-                //status1.text = "에러가..났습니다..."
-            }
-        }
-
-        fun addDatabase() {
-            if (facilityName == null) {
-                Toast.makeText(this, "소방서명을 제대로 받아오지 못했습니다.", Toast.LENGTH_LONG).show()
-                //txtAddResult.text = "입력되지 않은 값이 있습니다."
-                return
-            }
+            fun addDatabase() {
+                if (facilityName == null) {
+                    Toast.makeText(this, "소방서명을 제대로 받아오지 못했습니다.", Toast.LENGTH_LONG).show()
+                    //txtAddResult.text = "입력되지 않은 값이 있습니다."
+                    return
+                }
 
 //                val FirestationDTO = FirestationDTO(
 //                    //resultCode,
@@ -206,21 +200,31 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //                    fax
 //                )
 
-            val document = facilityName.toString()
+                val document = facilityName.toString()
 
-            firestore = FirebaseFirestore.getInstance()
+                firestore = FirebaseFirestore.getInstance()
 
-            firestore?.collection("FirestationList")?.document(document)
-                ?.set(status1!!)?.addOnCompleteListener { task ->
-                    //progressBar7.visibility = View.GONE
-                    if (task.isSuccessful) {
-                        Toast.makeText(this, "완료", Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG)
-                            .show()
+                firestore?.collection("FirestationList")?.document(document)
+                    ?.set(status1!!)?.addOnCompleteListener { task ->
+                        //progressBar7.visibility = View.GONE
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "완료", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG)
+                                .show()
+                        }
                     }
-                }
+            }
+
+            addDatabase()
+
+        } catch (e: Exception) {
+            if (status1 != null) {
+                //status1.text = "에러가..났습니다..."
+            }
         }
+
+
 
 
         txt_register.setOnClickListener{
@@ -230,7 +234,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         btn_login.setOnClickListener {
             emailLogin()
-            addDatabase()
 //            val intent = Intent(this, LoginResultActivity::class.java)
 //            startActivity(intent)
         }
