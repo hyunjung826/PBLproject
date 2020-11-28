@@ -166,19 +166,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     }
 
-                    XmlPullParser.END_TAG -> if ((parser.name == "item")) {
-                            status1 =
-                                (status1
-                                        //+ "법정동코드 : " + firestation_addr_code + "\n "
-                                        //+ "결과코드 : " + resultCode+ "\n "
-                                        + "시설물명 : " + facilityName + "\n "
-                                        + "위도 : " + latitude + "\n "
-                                        + "경도 : " + longitude + "\n "
-                                        + "주소 : " + addrNm + "\n "
-                                        + "연락처 : " + tel + "\n "
-                                        + "팩스번호 : " + fax
-                                        + "\n")
-                    }
+//                    XmlPullParser.END_TAG -> if ((parser.name == "item")) {
+//                            status1 =
+//                                (status1
+//                                        //+ "법정동코드 : " + firestation_addr_code + "\n "
+//                                        //+ "결과코드 : " + resultCode+ "\n "
+//                                        + "시설물명 : " + facilityName + "\n "
+//                                        + "위도 : " + latitude + "\n "
+//                                        + "경도 : " + longitude + "\n "
+//                                        + "주소 : " + addrNm + "\n "
+//                                        + "연락처 : " + tel + "\n "
+//                                        + "팩스번호 : " + fax
+//                                        + "\n")
+//                    }
                 }
                 parserEvent = parser.next()
             }
@@ -190,22 +190,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 }
 
-//                val FirestationDTO = FirestationDTO(
-//                    //resultCode,
-//                    facilityName,
-//                    latitude,
-//                    longitude,
-//                    addrNm,
-//                    tel,
-//                    fax
-//                )
+                val FirestationDTO = FirestationDTO(
+                    //resultCode,
+                    facilityName,
+                    latitude,
+                    longitude,
+                    addrNm,
+                    tel,
+                    fax
+                )
 
                 val document = facilityName.toString()
 
                 firestore = FirebaseFirestore.getInstance()
 
                 firestore?.collection("FirestationList")?.document(document)
-                    ?.set(status1!!)?.addOnCompleteListener { task ->
+                    ?.set(FirestationDTO)?.addOnCompleteListener { task ->
                         //progressBar7.visibility = View.GONE
                         if (task.isSuccessful) {
                             Toast.makeText(this, "완료", Toast.LENGTH_LONG).show()
@@ -216,7 +216,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
             }
 
-            addDatabase()
+            btn_login.setOnClickListener {
+                emailLogin()
+                addDatabase()
+//            val intent = Intent(this, LoginResultActivity::class.java)
+//            startActivity(intent)
+            }
 
         } catch (e: Exception) {
             if (status1 != null) {
@@ -232,11 +237,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
-        btn_login.setOnClickListener {
-            emailLogin()
-//            val intent = Intent(this, LoginResultActivity::class.java)
-//            startActivity(intent)
-        }
+
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting()
