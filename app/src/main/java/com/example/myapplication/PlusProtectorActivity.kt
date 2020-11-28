@@ -13,6 +13,8 @@ import kotlinx.android.synthetic.main.alert_popup.*
 
 
 class PlusProtectorActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plus_protector)
