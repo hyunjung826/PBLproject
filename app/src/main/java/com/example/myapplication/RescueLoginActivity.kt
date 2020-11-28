@@ -10,11 +10,8 @@ import android.os.StrictMode
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_my_location.*
 import kotlinx.android.synthetic.main.activity_rescue_login.*
@@ -25,13 +22,9 @@ import java.net.URL
 
 class RescueLoginActivity : Activity(){
 
-    //List Dialog Adapter
-    lateinit var adapter: ArrayAdapter<String>
-    var list = ArrayList<String>()
-
-    // 검색어를 입력할 Input 창
-    private var editSearch: EditText? = null
-
+    lateinit var adapter: ArrayAdapter<String>  // 리스트뷰에 연결할 Adapter
+    var list = ArrayList<String>()              // 소방서 목록 넣을 리스트
+    private var editSearch: EditText? = null    // 검색어를 입력할 Input 창
     private var arraylist: java.util.ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,16 +32,13 @@ class RescueLoginActivity : Activity(){
         setContentView(R.layout.activity_rescue_login)
 
         list = java.util.ArrayList()
-
         arraylist = java.util.ArrayList()
-
-        arraylist!!.addAll(list as java.util.ArrayList<String>)
 
         //검색하는 창
         editSearch = findViewById<View>(R.id.editSearch) as EditText
-
         //리스트 형식으로 소방서목록 받아온것
-        fire_listview.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        fire_listview.adapter = adapter
 
         // input창에 검색어를 입력시 "addTextChangedListener" 이벤트 리스너를 정의한다.
         editSearch!!.addTextChangedListener(object : TextWatcher {
@@ -102,20 +92,13 @@ class RescueLoginActivity : Activity(){
 
             }
         } catch (e: Exception) {
-            result_firestation.text = "에러가..났습니다..."
-
+            Toast.makeText(this, "에러가..났습니다...", Toast.LENGTH_LONG).show()
         }
-
-
+//
         //Adapter
-        adapter = ArrayAdapter(this, android.R.layout.select_dialog_singlechoice)
-        adapter.addAll(list)
+        //adapter.addAll(list)
+        arraylist!!.addAll(list)
         adapter.notifyDataSetChanged()
-
-        select_firestation.setOnClickListener {
-            CreateListDialog()
-        }
-
     }
 
     fun search(charText: String) {
@@ -139,29 +122,6 @@ class RescueLoginActivity : Activity(){
         // 리스트 데이터가 변경되었으므로 아답터를 갱신하여 검색된 데이터를 화면에 보여준다.
         adapter?.notifyDataSetChanged()
     }
-
-
-    //리스트 다이얼로그 생성
-    fun CreateListDialog() {
-        val alert = AlertDialog.Builder(this)
-        alert.setTitle("소방서목록") //타이틀
-
-        val checkedItem = -1 //맨 처음 아무것도 체크 안된 상태
-
-        //어답터 , 클릭이벤트 설정
-        alert.setSingleChoiceItems(adapter, checkedItem){ dialog, which -> }
-        alert.setPositiveButton("OK") { dialog, which -> }
-
-        alert.setAdapter(adapter, object : DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface, which: Int) {
-                val firestation = adapter.getItem(which)
-                result_firestation.setText(firestation)
-                //Toast.makeText(this@RescueLoginActivity, "선택한 소방서 : " + firestation, Toast.LENGTH_SHORT).show()
-            }
-        })
-        alert.show()
-    }
-
 
 }
 
